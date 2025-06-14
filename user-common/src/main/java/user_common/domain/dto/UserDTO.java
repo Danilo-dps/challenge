@@ -1,4 +1,4 @@
-package domain.dto;
+package user_common.domain.dto;
 
 import lombok.*;
 

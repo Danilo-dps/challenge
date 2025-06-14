@@ -1,9 +1,8 @@
-package domain.entities;
+package user_common.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -31,12 +30,10 @@ public class User implements Serializable {
     private String fullName;
 
     @NotBlank()
-    @UniqueElements
     @Column(nullable = false, length = 100)
     private String cpf;
 
     @NotBlank()
-    @UniqueElements
     @Column(nullable = false, length = 50)
     private String email;
 }

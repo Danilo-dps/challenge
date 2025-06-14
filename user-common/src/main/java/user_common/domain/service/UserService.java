@@ -1,7 +1,7 @@
-package domain.service;
+package user_common.domain.service;
 
-import domain.dto.UserDTO;
-import domain.record.UserResponse;
+import user_common.domain.dto.UserDTO;
+import user_common.domain.record.UserResponse;
 
 import java.util.UUID;
 
