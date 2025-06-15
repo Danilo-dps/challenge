@@ -1,7 +1,6 @@
 package user_common.domain.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.io.Serial;
@@ -15,7 +14,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tb_user")
+@Table(
+        name = "tb_users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email", name = "uk_user_email"),
+                @UniqueConstraint(columnNames = "cpf", name = "uk_user_cpf")
+        }
+)
 public class User implements Serializable {
 
     @Serial
@@ -26,15 +31,12 @@ public class User implements Serializable {
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID idUser;
 
-    @NotBlank()
     @Column(nullable = false, length = 100)
     private String fullName;
 
-    @NotBlank()
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String cpf;
 
-    @NotBlank()
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 }
