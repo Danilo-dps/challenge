@@ -1,7 +1,6 @@
 package user_common.domain.service.impl;
 
-import user_common.application.exceptions.DuplicateEmailException;
-import user_common.application.exceptions.UserNotFoundException;
+import user_common.application.exceptions.*;
 import user_common.domain.adapter.User2UserDTO;
 import user_common.domain.dto.UserDTO;
 import user_common.domain.model.User;
@@ -28,14 +27,30 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO create(UserDTO userDTO) {
-        Objects.requireNonNull(userDTO, "UserDTO não pode ser nulo");
-        User user = User.builder()
-                .fullName(userDTO.getFullName())
-                .email(userDTO.getEmail())
-                .cpf(userDTO.getCpf())
-                .build();
-        User savedUser = userRepository.save(user);
 
+        if (userDTO.getFullName() == null || userDTO.getFullName().trim().isEmpty()) {
+            throw new UserNameEmptyException();
+        }
+
+        if (userDTO.getCpf() == null || userDTO.getCpf().trim().isEmpty()) {
+            throw new UserCPFEmptyException();
+        }
+
+        if (userDTO.getEmail() == null || userDTO.getEmail().trim().isEmpty()) {
+            throw new UserEmailEmptyException();
+        }
+
+        if (userRepository.findByCpf(userDTO.getCpf()).isPresent()) {
+            throw new DuplicateCPFException(userDTO.getCpf());
+        }
+
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            throw new DuplicateEmailException(userDTO.getEmail());
+        }
+
+        User user = User.builder().fullName(userDTO.getFullName()).email(userDTO.getEmail()).cpf(userDTO.getCpf()).build();
+        logger.info("Usuário criado");
+        User savedUser = userRepository.save(user);
         return User2UserDTO.convert(savedUser);
     }
 
@@ -51,7 +66,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO update(UUID userId, UserResponse userResponse) {
-        Objects.requireNonNull(userId, "User ID não pode ser null");
 
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -82,7 +96,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException(userId);
         }
 
-        logger.info("Produto excluído");
+        logger.info("Usuário excluído");
         userRepository.deleteById(userId);
     }
 }
