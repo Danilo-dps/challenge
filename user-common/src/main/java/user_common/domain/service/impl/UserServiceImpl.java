@@ -1,5 +1,6 @@
 package user_common.domain.service.impl;
 
+import user_common.application.exceptions.DuplicateEmailException;
 import user_common.application.exceptions.UserNotFoundException;
 import user_common.domain.adapter.User2UserDTO;
 import user_common.domain.dto.UserDTO;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     private final UserRepository userRepository;
 
@@ -38,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO getByUserId(UUID userId) {
+    public UserDTO getById(UUID userId) {
         Objects.requireNonNull(userId, "User ID não pode ser null");
 
         return userRepository.findById(userId)
@@ -47,12 +50,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateInfo(UUID userId, UserResponse userResponse) {
-        return null;
+    public UserDTO update(UUID userId, UserResponse userResponse) {
+        Objects.requireNonNull(userId, "User ID não pode ser null");
+
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (userResponse.email() != null
+                && !userResponse.email().equals(existingUser.getEmail())
+                && userRepository.findByEmail(userResponse.email()).isPresent()) {
+                throw new DuplicateEmailException(userResponse.email());
+        }
+
+        if (userResponse.fullName() != null && !userResponse.fullName().isBlank()) {
+            existingUser.setFullName(userResponse.fullName());
+        }
+
+        if (userResponse.email() != null && !userResponse.email().isBlank()) {
+            existingUser.setEmail(userResponse.email());
+        }
+
+        logger.info("Usuário atualizado");
+        User updatedUser = userRepository.save(existingUser);
+        return User2UserDTO.convert(updatedUser);
     }
 
     @Override
-    public UserDTO deleteAccount(UUID userId) {
-        return null;
+    public void delete(UUID userId) {
+        logger.info("Verificando a existência do usuário para excluir");
+        if (!userRepository.existsById(userId)) {
+            logger.warning("Erro. Usuário não encontrado");
+            throw new UserNotFoundException(userId);
+        }
+
+        logger.info("Produto excluído");
+        userRepository.deleteById(userId);
     }
 }
