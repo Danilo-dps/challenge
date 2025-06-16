@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -23,10 +24,69 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 ex.getMessage(),
-                "NOT_FOUND",
+                "USER_NOT_FOUND",
                 HttpStatus.NOT_FOUND.value()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(DuplicateCPFException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleDuplicateCPF(DuplicateCPFException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "DUPLICATE_CPF",
+                HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "DUPLICATE_EMAIL",
+                HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(UserEmailEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleUserEmailEmpty(UserEmailEmptyException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "EMAIL_EMPTY",
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(UserNameEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleUserNameEmpty(UserNameEmptyException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "USERNAME_EMPTY",
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> handleGenericRuntimeException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.",
+                "UNEXPECTED_ERROR",
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 }
