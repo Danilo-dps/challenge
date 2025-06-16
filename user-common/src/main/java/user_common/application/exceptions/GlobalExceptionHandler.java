@@ -54,6 +54,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    @ExceptionHandler(UserCPFEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleUserCPFEmpty(UserCPFEmptyException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "CPF_EMPTY",
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(UserEmailEmptyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleUserEmailEmpty(UserEmailEmptyException ex) {
