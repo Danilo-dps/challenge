@@ -22,25 +22,19 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable UUID userId) {
         UserDTO userSearch = userService.getById(userId);
-        return userSearch != null
-                ? ResponseEntity.ok(userSearch)
-                : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(userSearch);
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
         UserDTO userCreated = userService.create(userDTO);
-        return userCreated != null
-                ? ResponseEntity.status(HttpStatus.CREATED).body(userCreated)
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID userId, @RequestBody UserResponse userResponse){
         UserDTO userUpdate = userService.update(userId, userResponse);
-        return userUpdate != null
-                ? ResponseEntity.ok(userUpdate)
-                : ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(userUpdate);
     }
 
     @DeleteMapping("/{userId}")
