@@ -10,4 +10,8 @@ public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(UUID userId) {
         super("Usuário com ID " + userId + " não encontrado.");
     }
+
+    public UserNotFoundException(String email) {
+        super("Usuário com email " + email + " não encontrado.");
+    }
 }
