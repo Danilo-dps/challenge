@@ -6,6 +6,7 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -39,14 +40,23 @@ public class User implements Serializable {
     private String cpf;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String email;
+    private String userEmail;
 
+    @Column(nullable = false)
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
-    public void deposit(BigDecimal value) {
-        if (value == null || value.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do depósito deve ser positivo");
-        }
-        this.balance = this.balance.add(value);
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TransferHistory> transferHistory;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DepositHistory> depositHistory;
+
+    public User(UUID idUser, String fullName, String cpf, String userEmail, BigDecimal balance) {
+        this.idUser = idUser;
+        this.fullName = fullName;
+        this.cpf = cpf;
+        this.userEmail = userEmail;
+        this.balance = BigDecimal.ZERO;
     }
 }

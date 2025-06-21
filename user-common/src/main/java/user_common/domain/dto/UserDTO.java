@@ -1,10 +1,12 @@
 package user_common.domain.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -26,5 +28,16 @@ public class UserDTO {
 
     @Email(message = "Formato de e-mail inválido")
     @NotBlank(message = "O e-mail é obrigatório")
-    private String email;
+    private String userEmail;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private BigDecimal balance = BigDecimal.ZERO;
+
+    public UserDTO(String fullName, String cpf, String userEmail, BigDecimal balance) {
+        this.fullName = fullName;
+        this.cpf = cpf;
+        this.userEmail = userEmail;
+        this.balance = BigDecimal.ZERO;
+    }
 }
