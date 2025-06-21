@@ -3,7 +3,6 @@ package user_common.domain.service;
 import user_common.domain.dto.UserDTO;
 import user_common.domain.record.UserResponse;
 
-import java.util.Map;
 import java.util.UUID;
 
 public interface UserService {

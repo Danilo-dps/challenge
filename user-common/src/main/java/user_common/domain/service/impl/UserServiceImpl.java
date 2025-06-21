@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
             throw new UserCPFEmptyException();
         }
 
-        if (userDTO.getEmail() == null || userDTO.getEmail().trim().isEmpty()) {
+        if (userDTO.getUserEmail() == null || userDTO.getUserEmail().trim().isEmpty()) {
             logger.warning("Erro. Email está vazio");
             throw new UserEmailEmptyException();
         }
@@ -48,12 +48,12 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateCPFException(userDTO.getCpf());
         }
 
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+        if (userRepository.findByUserEmail(userDTO.getUserEmail()).isPresent()) {
             logger.warning("Erro. Email já cadastrado");
-            throw new DuplicateEmailException(userDTO.getEmail());
+            throw new DuplicateEmailException(userDTO.getUserEmail());
         }
 
-        User user = User.builder().fullName(userDTO.getFullName()).email(userDTO.getEmail()).cpf(userDTO.getCpf()).build();
+        User user = User.builder().fullName(userDTO.getFullName()).userEmail(userDTO.getUserEmail()).cpf(userDTO.getCpf()).build();
         logger.info("Usuário criado!");
         User savedUser = userRepository.save(user);
         return User2UserDTO.convert(savedUser);
@@ -73,13 +73,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO update(UUID userId, UserResponse userResponse) {
         logger.info("Atualizando dados...");
         User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new UserNotFoundException(userId);});
 
         if (userResponse.email() != null
-                && !userResponse.email().equals(existingUser.getEmail())
-                && userRepository.findByEmail(userResponse.email()).isPresent()) {
+                && !userResponse.email().equals(existingUser.getUserEmail())
+                && userRepository.findByUserEmail(userResponse.email()).isPresent()) {
                 logger.warning("Erro. email já cadastrado");
                 throw new DuplicateEmailException(userResponse.email());
         }
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userResponse.email() != null && !userResponse.email().isBlank()) {
-            existingUser.setEmail(userResponse.email());
+            existingUser.setUserEmail(userResponse.email());
         }
 
         logger.info("Usuário atualizado");
@@ -98,6 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID userId) {
         logger.info("Verificando a existência do usuário para excluir...");
         if (!userRepository.existsById(userId)) {
