@@ -1,4 +1,7 @@
 package user_common.domain.record;
 
-public record UserResponse(String fullName, String email) {
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public record UserResponse(UUID idUser, String fullName, String userEmail, BigDecimal balance) {
 }

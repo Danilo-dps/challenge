@@ -2,6 +2,8 @@ package user_common.domain.service.impl;
 
 import user_common.application.exceptions.*;
 import user_common.domain.adapter.User2UserDTO;
+import user_common.domain.adapter.User2UserResponse;
+import user_common.domain.adapter.UserDTO2UserResponse;
 import user_common.domain.dto.UserDTO;
 import user_common.domain.model.User;
 import user_common.domain.record.UserResponse;
@@ -61,16 +63,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO getById(UUID userId) {
-        Objects.requireNonNull(userId, "User ID não pode ser null");
+    public UserResponse getById(UUID idUser) {
+        Objects.requireNonNull(idUser, "User ID não pode ser null");
         logger.info("Procurando usuário...");
-        return userRepository.findById(userId)
-                .map(User2UserDTO::convert)
+        return userRepository.findById(idUser)
+                .map(User2UserResponse::convert)
                 .orElseThrow(() -> {
-                    logger.warning("Usuário não encontrado com ID: " + userId);
-                    return new UserNotFoundException(userId);
+                    logger.warning("Usuário não encontrado com ID: " + idUser);
+                    return new UserNotFoundException(idUser);
                 });
     }
+
+    @Override
+    @Transactional
+    public UserResponse getByEmail(String userEmail) {
+        Objects.requireNonNull(userEmail, "Email não pode ser null");
+        logger.info("Procurando usuário...");
+        return userRepository.findByUserEmail(userEmail)
+                .map(User2UserResponse::convert)
+                .orElseThrow(() -> {
+                    logger.warning("Usuário não encontrado com Email: " + userEmail);
+                    return new UserNotFoundException(userEmail);
+                });
+       }
 
     @Override
     @Transactional
@@ -78,19 +93,19 @@ public class UserServiceImpl implements UserService {
         logger.info("Atualizando dados...");
         User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new UserNotFoundException(userId);});
 
-        if (userResponse.email() != null
-                && !userResponse.email().equals(existingUser.getUserEmail())
-                && userRepository.findByUserEmail(userResponse.email()).isPresent()) {
+        if (userResponse.userEmail() != null
+                && !userResponse.userEmail().equals(existingUser.getUserEmail())
+                && userRepository.findByUserEmail(userResponse.userEmail()).isPresent()) {
                 logger.warning("Erro. email já cadastrado");
-                throw new DuplicateEmailException(userResponse.email());
+                throw new DuplicateEmailException(userResponse.userEmail());
         }
 
         if (userResponse.fullName() != null && !userResponse.fullName().isBlank()) {
             existingUser.setFullName(userResponse.fullName());
         }
 
-        if (userResponse.email() != null && !userResponse.email().isBlank()) {
-            existingUser.setUserEmail(userResponse.email());
+        if (userResponse.userEmail() != null && !userResponse.userEmail().isBlank()) {
+            existingUser.setUserEmail(userResponse.userEmail());
         }
 
         logger.info("Usuário atualizado");
