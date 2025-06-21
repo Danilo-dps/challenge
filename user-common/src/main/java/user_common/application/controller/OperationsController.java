@@ -10,6 +10,8 @@ import user_common.domain.dto.DepositHistoryDTO;
 import user_common.domain.dto.DepositRequestDTO;
 import user_common.domain.dto.TransferHistoryDTO;
 import user_common.domain.dto.TransferRequestDTO;
+import user_common.domain.record.DepositResponse;
+import user_common.domain.record.TransferResponse;
 import user_common.domain.service.OperationsService;
 
 import java.math.BigDecimal;
@@ -26,14 +28,14 @@ public class OperationsController {
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<DepositHistoryDTO> deposit(@RequestBody DepositRequestDTO requestDeposit) {
-        DepositHistoryDTO depositHistoryCreated = operationsService.deposit(requestDeposit);
+    public ResponseEntity<DepositResponse> deposit(@RequestBody DepositRequestDTO requestDeposit) {
+        DepositResponse depositHistoryCreated = operationsService.deposit(requestDeposit);
         return ResponseEntity.status(HttpStatus.CREATED).body(depositHistoryCreated);
     }
 
     @PostMapping("/transfer")
-    ResponseEntity<TransferHistoryDTO> transfer(@RequestBody TransferRequestDTO requestTransfer){
-        TransferHistoryDTO transferHistoryCreated = operationsService.transfer(requestTransfer);
+    ResponseEntity<TransferResponse> transfer(@RequestBody TransferRequestDTO requestTransfer){
+        TransferResponse transferHistoryCreated = operationsService.transfer(requestTransfer);
         return ResponseEntity.status(HttpStatus.CREATED).body(transferHistoryCreated);
     }
 }

@@ -6,7 +6,9 @@ import user_common.application.exceptions.InsufficientBalanceException;
 import user_common.application.exceptions.InvalidValueException;
 import user_common.application.exceptions.UserNotFoundException;
 import user_common.domain.adapter.DepositHistory2DepositHistoryDTO;
+import user_common.domain.adapter.DepositHistory2DepositResponse;
 import user_common.domain.adapter.TransferHistory2TransferHistoryDTO;
+import user_common.domain.adapter.TransferHistory2TransferResponse;
 import user_common.domain.dto.DepositHistoryDTO;
 import user_common.domain.dto.DepositRequestDTO;
 import user_common.domain.dto.TransferHistoryDTO;
@@ -14,6 +16,8 @@ import user_common.domain.dto.TransferRequestDTO;
 import user_common.domain.model.DepositHistory;
 import user_common.domain.model.TransferHistory;
 import user_common.domain.model.User;
+import user_common.domain.record.DepositResponse;
+import user_common.domain.record.TransferResponse;
 import user_common.domain.repository.DepositHistoryRepository;
 import user_common.domain.repository.TransferHistoryRepository;
 import user_common.domain.repository.UserRepository;
@@ -43,7 +47,7 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Override
     @Transactional
-    public DepositHistoryDTO deposit(DepositRequestDTO requestDeposit) {
+    public DepositResponse deposit(DepositRequestDTO requestDeposit) {
 
         if (requestDeposit.getAmount() == null || requestDeposit.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException();
@@ -58,12 +62,12 @@ public class OperationsServiceImpl implements OperationsService {
         DepositHistory deposit = new DepositHistory(LocalDateTime.now(), "Depósito", requestDeposit.getAmount(), user);
         depositHistoryRepository.save(deposit);
 
-        return DepositHistory2DepositHistoryDTO.convert(deposit);
+        return DepositHistory2DepositResponse.convert(deposit);
     }
 
     @Override
     @Transactional
-    public TransferHistoryDTO transfer(TransferRequestDTO requestTransfer) {
+    public TransferResponse transfer(TransferRequestDTO requestTransfer) {
         if (requestTransfer.getAmount() == null || requestTransfer.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidValueException();
         }
@@ -86,7 +90,7 @@ public class OperationsServiceImpl implements OperationsService {
         TransferHistory transfer = new TransferHistory(now, destinationUser.getUserEmail(),"Transferência", requestTransfer.getAmount(), fromUser);
         transferHistoryRepository.save(transfer);
 
-        return TransferHistory2TransferHistoryDTO.convert(transfer);
+        return TransferHistory2TransferResponse.convert(transfer);
     }
 
 }
