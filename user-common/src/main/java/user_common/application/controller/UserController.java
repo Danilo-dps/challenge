@@ -19,9 +19,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID userId) {
-        UserDTO userSearch = userService.getById(userId);
+    @GetMapping("/id/{userId}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID userId) {
+        UserResponse userSearch = userService.getById(userId);
+        return ResponseEntity.ok(userSearch);
+    }
+
+    @GetMapping("/email/{userEmail}")
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String userEmail) {
+        UserResponse userSearch = userService.getByEmail(userEmail);
         return ResponseEntity.ok(userSearch);
     }
 
