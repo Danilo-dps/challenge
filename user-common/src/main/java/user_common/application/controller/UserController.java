@@ -2,11 +2,14 @@ package user_common.application.controller;
 
 import org.springframework.web.bind.annotation.*;
 import user_common.domain.dto.UserDTO;
+import user_common.domain.record.DepositResponse;
+import user_common.domain.record.TransferResponse;
 import user_common.domain.record.UserResponse;
 import user_common.domain.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -47,5 +50,21 @@ public class UserController {
     public ResponseEntity <Void> deleteUser(@PathVariable UUID userId){
         userService.delete(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/deposit/{userId}")
+    public ResponseEntity<List<DepositResponse>> getAllDeposit(@PathVariable UUID userId){
+        List<DepositResponse> listAllDeposits = userService.getAllDeposits(userId);
+        return listAllDeposits.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.ok(listAllDeposits);
+    }
+
+    @GetMapping("/transfer/{userId}")
+    public ResponseEntity<List<TransferResponse>> getAllTransfer(@PathVariable UUID userId){
+        List<TransferResponse> listAllTransfers = userService.getAllTransfers(userId);
+        return listAllTransfers.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.ok(listAllTransfers);
     }
 }

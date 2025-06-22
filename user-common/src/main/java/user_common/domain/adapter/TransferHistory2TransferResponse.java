@@ -3,11 +3,20 @@ package user_common.domain.adapter;
 import user_common.domain.model.TransferHistory;
 import user_common.domain.record.TransferResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TransferHistory2TransferResponse {
 
     private TransferHistory2TransferResponse(){}
 
     public static TransferResponse convert(TransferHistory transferHistory){
         return new TransferResponse(transferHistory.getTransferId(), transferHistory.getUser().getFullName(), transferHistory.getUser().getUserEmail(), transferHistory.getDestinationEmail(), transferHistory.getAmount(), transferHistory.getWhenDidItHappen());
+    }
+
+    public static List<TransferResponse> convertToList(List<TransferHistory> listTransferHistory){
+        return listTransferHistory.stream()
+                .map(TransferHistory2TransferResponse::convert)
+                .collect(Collectors.toList());
     }
 }

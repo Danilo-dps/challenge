@@ -1,10 +1,16 @@
 package user_common.domain.service.impl;
 
 import user_common.application.exceptions.*;
+import user_common.domain.adapter.DepositHistory2DepositResponse;
+import user_common.domain.adapter.TransferHistory2TransferResponse;
 import user_common.domain.adapter.User2UserDTO;
 import user_common.domain.adapter.User2UserResponse;
 import user_common.domain.dto.UserDTO;
+import user_common.domain.model.DepositHistory;
+import user_common.domain.model.TransferHistory;
 import user_common.domain.model.User;
+import user_common.domain.record.DepositResponse;
+import user_common.domain.record.TransferResponse;
 import user_common.domain.record.UserResponse;
 import user_common.domain.repository.UserRepository;
 import user_common.domain.service.UserService;
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Service;
 import user_common.domain.service.validations.EmailValidator;
 import user_common.domain.service.validations.UserValidator;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -123,4 +130,21 @@ public class UserServiceImpl implements UserService {
         logger.info("Usuário excluído");
         userRepository.deleteById(userId);
     }
+
+    @Override
+    @Transactional
+    public List<DepositResponse> getAllDeposits(UUID idUser){
+        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new UserNotFoundException(idUser);});
+        List<DepositHistory> listAllDeposit = user.getDepositHistory();
+        return DepositHistory2DepositResponse.convertToList(listAllDeposit);
+    }
+
+    @Override
+    @Transactional
+    public List<TransferResponse> getAllTransfers(UUID idUser){
+        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new UserNotFoundException(idUser);});
+        List<TransferHistory> listAllTransfer = user.getTransferHistory();
+        return TransferHistory2TransferResponse.convertToList(listAllTransfer);
+    }
+
 }
