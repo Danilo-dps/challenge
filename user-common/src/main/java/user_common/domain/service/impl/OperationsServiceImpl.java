@@ -5,13 +5,9 @@ import org.springframework.stereotype.Service;
 import user_common.application.exceptions.InsufficientBalanceException;
 import user_common.application.exceptions.InvalidValueException;
 import user_common.application.exceptions.UserNotFoundException;
-import user_common.domain.adapter.DepositHistory2DepositHistoryDTO;
 import user_common.domain.adapter.DepositHistory2DepositResponse;
-import user_common.domain.adapter.TransferHistory2TransferHistoryDTO;
 import user_common.domain.adapter.TransferHistory2TransferResponse;
-import user_common.domain.dto.DepositHistoryDTO;
 import user_common.domain.dto.DepositRequestDTO;
-import user_common.domain.dto.TransferHistoryDTO;
 import user_common.domain.dto.TransferRequestDTO;
 import user_common.domain.model.DepositHistory;
 import user_common.domain.model.TransferHistory;
@@ -25,8 +21,6 @@ import user_common.domain.service.OperationsService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.logging.Logger;
 
 @Service
