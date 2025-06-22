@@ -3,7 +3,6 @@ package user_common.domain.service.impl;
 import user_common.application.exceptions.*;
 import user_common.domain.adapter.User2UserDTO;
 import user_common.domain.adapter.User2UserResponse;
-import user_common.domain.adapter.UserDTO2UserResponse;
 import user_common.domain.dto.UserDTO;
 import user_common.domain.model.User;
 import user_common.domain.record.UserResponse;
@@ -11,6 +10,8 @@ import user_common.domain.repository.UserRepository;
 import user_common.domain.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import user_common.domain.service.validations.EmailValidator;
+import user_common.domain.service.validations.UserValidator;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -21,35 +22,30 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
 
     private final UserRepository userRepository;
+    private final UserValidator userValidator;
+    private final EmailValidator emailValidator;
 
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, UserValidator userValidator, EmailValidator emailValidator){
         this.userRepository = userRepository;
+        this.userValidator = userValidator;
+        this.emailValidator = emailValidator;
     }
 
     @Override
     @Transactional
     public UserDTO create(UserDTO userDTO) {
         logger.info("Criando login...");
+
+        userValidator.validate(userDTO);
+
         if (userDTO.getFullName() == null || userDTO.getFullName().trim().isEmpty()) {
             logger.warning("Erro. Nome está vazio");
             throw new UserNameEmptyException();
         }
-
-        if (userDTO.getCpf() == null || userDTO.getCpf().trim().isEmpty()) {
-            logger.warning("Erro. CPF está vazio");
-            throw new UserCPFEmptyException();
-        }
-
-        if (userDTO.getUserEmail() == null || userDTO.getUserEmail().trim().isEmpty()) {
-            logger.warning("Erro. Email está vazio");
-            throw new UserEmailEmptyException();
-        }
-
         if (userRepository.findByCpf(userDTO.getCpf()).isPresent()) {
             logger.warning("Erro. CPF já cadastrado");
             throw new DuplicateCPFException(userDTO.getCpf());
         }
-
         if (userRepository.findByUserEmail(userDTO.getUserEmail()).isPresent()) {
             logger.warning("Erro. Email já cadastrado");
             throw new DuplicateEmailException(userDTO.getUserEmail());
@@ -92,6 +88,8 @@ public class UserServiceImpl implements UserService {
     public UserDTO update(UUID userId, UserResponse userResponse) {
         logger.info("Atualizando dados...");
         User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new UserNotFoundException(userId);});
+
+        emailValidator.validate(userResponse.userEmail());
 
         if (userResponse.userEmail() != null
                 && !userResponse.userEmail().equals(existingUser.getUserEmail())
