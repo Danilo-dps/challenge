@@ -18,9 +18,9 @@ public class GlobalExceptionHandler {
             int statusCode
     ) {}
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleUserNotFound(NotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 ex.getMessage(),
@@ -28,6 +28,18 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(DuplicateCNPJException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleDuplicateCNPJ(DuplicateCNPJException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "DUPLICATE_CNPJ",
+                HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(DuplicateCPFException.class)
@@ -66,9 +78,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(UserEmailEmptyException.class)
+    @ExceptionHandler(StoreCNPJEmptyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleUserEmailEmpty(UserEmailEmptyException ex) {
+    public ResponseEntity<ErrorResponse> handleStoreCNPJEmpty(StoreCNPJEmptyException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "CNPJ_EMPTY",
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(EmailEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleUserEmailEmpty(EmailEmptyException ex) {
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 ex.getMessage(),
@@ -78,9 +102,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(UserNameEmptyException.class)
+    @ExceptionHandler(NameEmptyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleUserNameEmpty(UserNameEmptyException ex) {
+    public ResponseEntity<ErrorResponse> handleUserNameEmpty(NameEmptyException ex) {
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 ex.getMessage(),
@@ -121,6 +145,18 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 ex.getMessage(),
                 "INVALID_EMAIL_INPUT",
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(InvalidCNPJException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleInvalidCNPJException(InvalidCNPJException ex) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "INVALID_CNPJ_INPUT",
                 HttpStatus.BAD_REQUEST.value()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
