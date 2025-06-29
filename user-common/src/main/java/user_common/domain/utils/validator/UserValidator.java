@@ -1,7 +1,9 @@
-package user_common.domain.service.validations;
+package user_common.domain.utils.validator;
 
 import org.springframework.stereotype.Component;
 import user_common.domain.dto.UserDTO;
+import user_common.domain.utils.validations.CpfValidator;
+import user_common.domain.utils.validations.EmailValidator;
 
 @Component
 public class UserValidator {

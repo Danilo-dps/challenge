@@ -1,6 +1,7 @@
-package user_common.domain.service.validations;
+package user_common.domain.utils.validations;
 
 import org.springframework.stereotype.Component;
+import user_common.application.exceptions.EmailEmptyException;
 import user_common.application.exceptions.InvalidEmailException;
 
 import java.util.logging.Logger;
@@ -16,9 +17,9 @@ public class EmailValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     public void validate(String email) {
-        if (isNull(email)) {
+        if (isNullOrEmpty(email)) {
             logger.warning(ERROR_EMAIL);
-            throw new InvalidEmailException(email);
+            throw new EmailEmptyException();
         }
 
         if (hasInvalidStructure(email)) {
@@ -32,8 +33,8 @@ public class EmailValidator {
         }
     }
 
-    private boolean isNull(String email) {
-        return email == null;
+    private boolean isNullOrEmpty(String email) {
+        return email == null || email.trim().isEmpty();
     }
 
     private boolean hasInvalidStructure(String email) {

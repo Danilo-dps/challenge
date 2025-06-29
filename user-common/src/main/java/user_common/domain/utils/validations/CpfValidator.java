@@ -1,4 +1,4 @@
-package user_common.domain.service.validations;
+package user_common.domain.utils.validations;
 
 import org.springframework.stereotype.Component;
 import user_common.application.exceptions.InvalidCPFException;
