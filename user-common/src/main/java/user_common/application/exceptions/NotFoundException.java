@@ -3,15 +3,15 @@ package user_common.application.exceptions;
 import java.io.Serial;
 import java.util.UUID;
 
-public class UserNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UserNotFoundException(UUID userId) {
+    public NotFoundException(UUID userId) {
         super("Usuário com ID " + userId + " não encontrado.");
     }
 
-    public UserNotFoundException(String email) {
+    public NotFoundException(String email) {
         super("Usuário com email " + email + " não encontrado.");
     }
 }

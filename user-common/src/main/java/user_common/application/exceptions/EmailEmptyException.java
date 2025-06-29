@@ -2,11 +2,11 @@ package user_common.application.exceptions;
 
 import java.io.Serial;
 
-public class UserEmailEmptyException extends RuntimeException {
+public class EmailEmptyException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UserEmailEmptyException() {
+    public EmailEmptyException() {
         super("Email de usuário não pode ser vazio");
     }
 }
