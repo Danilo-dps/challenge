@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.danilodps</groupId>
-	<artifactId>user-common</artifactId>
+	<artifactId>pay</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user-common</name>
-	<description>A common user</description>
+	<name>pay</name>
+	<description>A way to pay</description>
 	<url/>
 	<licenses>
 		<license/>
