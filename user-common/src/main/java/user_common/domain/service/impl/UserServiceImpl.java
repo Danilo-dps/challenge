@@ -16,8 +16,8 @@ import user_common.domain.repository.UserRepository;
 import user_common.domain.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import user_common.domain.service.validations.EmailValidator;
-import user_common.domain.service.validations.UserValidator;
+import user_common.domain.utils.validations.EmailValidator;
+import user_common.domain.utils.validator.UserValidator;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
         if (userDTO.getFullName() == null || userDTO.getFullName().trim().isEmpty()) {
             logger.warning("Erro. Nome está vazio");
-            throw new UserNameEmptyException();
+            throw new NameEmptyException();
         }
         if (userRepository.findByCpf(userDTO.getCpf()).isPresent()) {
             logger.warning("Erro. CPF já cadastrado");
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 .map(User2UserResponse::convert)
                 .orElseThrow(() -> {
                     logger.warning("Usuário não encontrado com ID: " + idUser);
-                    return new UserNotFoundException(idUser);
+                    return new NotFoundException(idUser);
                 });
     }
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
                 .map(User2UserResponse::convert)
                 .orElseThrow(() -> {
                     logger.warning("Usuário não encontrado com Email: " + userEmail);
-                    return new UserNotFoundException(userEmail);
+                    return new NotFoundException(userEmail);
                 });
        }
 
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO update(UUID userId, UserResponse userResponse) {
         logger.info("Atualizando dados...");
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new UserNotFoundException(userId);});
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new NotFoundException(userId);});
 
         emailValidator.validate(userResponse.userEmail());
 
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
         logger.info("Verificando a existência do usuário para excluir...");
         if (!userRepository.existsById(userId)) {
             logger.warning("Erro. Usuário não encontrado");
-            throw new UserNotFoundException(userId);
+            throw new NotFoundException(userId);
         }
 
         logger.info("Usuário excluído");
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<DepositResponse> getAllDeposits(UUID idUser){
-        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new UserNotFoundException(idUser);});
+        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new NotFoundException(idUser);});
         List<DepositHistory> listAllDeposit = user.getDepositHistory();
         return DepositHistory2DepositResponse.convertToList(listAllDeposit);
     }
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<TransferResponse> getAllTransfers(UUID idUser){
-        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new UserNotFoundException(idUser);});
+        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new NotFoundException(idUser);});
         List<TransferHistory> listAllTransfer = user.getTransferHistory();
         return TransferHistory2TransferResponse.convertToList(listAllTransfer);
     }

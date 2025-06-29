@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import user_common.application.exceptions.InsufficientBalanceException;
 import user_common.application.exceptions.InvalidValueException;
-import user_common.application.exceptions.UserNotFoundException;
+import user_common.application.exceptions.NotFoundException;
 import user_common.domain.adapter.DepositHistory2DepositResponse;
 import user_common.domain.adapter.TransferHistory2TransferResponse;
 import user_common.domain.dto.DepositRequestDTO;
@@ -48,7 +48,7 @@ public class OperationsServiceImpl implements OperationsService {
         }
 
         User user = userRepository.findByUserEmail(requestDeposit.getUserEmail())
-                .orElseThrow(() -> new UserNotFoundException(requestDeposit.getUserEmail()));
+                .orElseThrow(() -> new NotFoundException(requestDeposit.getUserEmail()));
 
         user.setBalance(user.getBalance().add(requestDeposit.getAmount()));
         userRepository.save(user);
@@ -66,8 +66,8 @@ public class OperationsServiceImpl implements OperationsService {
             throw new InvalidValueException();
         }
 
-        User fromUser = userRepository.findByUserEmail(requestTransfer.getUserEmail()).orElseThrow(() -> new UserNotFoundException(requestTransfer.getUserEmail()));
-        User destinationUser = userRepository.findByUserEmail(requestTransfer.getDestinationEmail()).orElseThrow(() -> new UserNotFoundException(requestTransfer.getDestinationEmail()));
+        User fromUser = userRepository.findByUserEmail(requestTransfer.getUserEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getUserEmail()));
+        User destinationUser = userRepository.findByUserEmail(requestTransfer.getDestinationEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getDestinationEmail()));
 
         if (fromUser.getBalance() == null || fromUser.getBalance().compareTo(requestTransfer.getAmount()) < 0) {
             throw new InsufficientBalanceException();
