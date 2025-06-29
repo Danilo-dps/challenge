@@ -46,10 +46,8 @@ public class User implements Serializable {
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TransferHistory> transferHistory;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DepositHistory> depositHistory;
 
     public User(UUID idUser, String fullName, String cpf, String userEmail, BigDecimal balance) {
