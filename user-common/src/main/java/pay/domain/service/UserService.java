@@ -11,10 +11,10 @@ import java.util.UUID;
 public interface UserService {
 
     UserDTO create(UserDTO userDTO);
-    UserResponse getById(UUID idUser);
-    UserResponse getByEmail(String userEmail);
+    UserResponse getById(UUID userId);
+    UserResponse getByEmail(String email);
     UserDTO update(UUID userId, UserResponse userResponse);
     void delete(UUID userId);
-    List<DepositResponse> getAllDeposits(UUID idUser);
-    List<TransferResponse> getAllTransfers(UUID idUser);
+    List<DepositResponse> getAllDeposits(UUID userId);
+    List<TransferResponse> getAllTransfers(UUID userId);
 }

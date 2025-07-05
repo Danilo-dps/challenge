@@ -11,7 +11,7 @@ public class TransferHistory2TransferResponse {
     private TransferHistory2TransferResponse(){}
 
     public static TransferResponse convert(TransferHistory transferHistory){
-        return new TransferResponse(transferHistory.getTransferId(), transferHistory.getUser().getFullName(), transferHistory.getUser().getUserEmail(), transferHistory.getDestinationEmail(), transferHistory.getAmount(), transferHistory.getWhenDidItHappen());
+        return new TransferResponse(transferHistory.getTransferId(), transferHistory.getUser().getUsername(), transferHistory.getUser().getEmail(), transferHistory.getDestinationEmail(), transferHistory.getAmount(), transferHistory.getWhenDidItHappen());
     }
 
     public static List<TransferResponse> convertToList(List<TransferHistory> listTransferHistory){

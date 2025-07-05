@@ -31,16 +31,16 @@ public class User implements Serializable {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
-    private UUID idUser;
+    private UUID userId;
 
     @Column(nullable = false, length = 100)
-    private String fullName;
+    private String username;
 
     @Column(nullable = false, unique = true, length = 100)
     private String cpf;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String userEmail;
+    private String email;
 
     @Column(nullable = false)
     @Builder.Default
@@ -50,11 +50,11 @@ public class User implements Serializable {
 
     private List<DepositHistory> depositHistory;
 
-    public User(UUID idUser, String fullName, String cpf, String userEmail, BigDecimal balance) {
-        this.idUser = idUser;
-        this.fullName = fullName;
+    public User(UUID userId, String username, String cpf, String email, BigDecimal balance) {
+        this.userId = userId;
+        this.username = username;
         this.cpf = cpf;
-        this.userEmail = userEmail;
+        this.email = email;
         this.balance = BigDecimal.ZERO;
     }
 }

@@ -18,6 +18,6 @@ public class UserValidator {
 
     public void validate(UserDTO userDTO) {
         cpfValidator.validate(userDTO.getCpf());
-        emailValidator.validate(userDTO.getUserEmail());
+        emailValidator.validate(userDTO.getEmail());
     }
 }

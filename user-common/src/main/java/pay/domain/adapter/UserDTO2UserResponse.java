@@ -8,6 +8,6 @@ public class UserDTO2UserResponse {
     private UserDTO2UserResponse() {}
 
     public static UserResponse convert(UserDTO userDTO){
-        return new UserResponse(userDTO.getIdUser(), userDTO.getFullName(), userDTO.getUserEmail(), userDTO.getBalance());
+        return new UserResponse(userDTO.getUserId(), userDTO.getUsername(), userDTO.getEmail(), userDTO.getBalance());
     }
 }

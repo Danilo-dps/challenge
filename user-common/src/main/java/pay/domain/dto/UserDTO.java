@@ -14,25 +14,25 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDTO {
 
-    private UUID idUser;
+    private UUID userId;
 
     @NotBlank(message = "O nome completo é obrigatório")
-    private String fullName;
+    private String username;
 
     @NotBlank(message = "O CPF é obrigatório")
     private String cpf;
 
     @NotBlank(message = "O e-mail é obrigatório")
-    private String userEmail;
+    private String email;
 
     @Column(nullable = false)
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
-    public UserDTO(String fullName, String cpf, String userEmail, BigDecimal balance) {
-        this.fullName = fullName;
+    public UserDTO(String username, String cpf, String email, BigDecimal balance) {
+        this.username = username;
         this.cpf = cpf;
-        this.userEmail = userEmail;
+        this.email = email;
         this.balance = BigDecimal.ZERO;
     }
 }

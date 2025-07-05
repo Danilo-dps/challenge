@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
         userValidator.validate(userDTO);
 
-        if (userDTO.getFullName() == null || userDTO.getFullName().trim().isEmpty()) {
+        if (userDTO.getUsername() == null || userDTO.getUsername().trim().isEmpty()) {
             logger.warning("Erro. Nome está vazio");
             throw new NameEmptyException();
         }
@@ -53,12 +53,12 @@ public class UserServiceImpl implements UserService {
             logger.warning("Erro. CPF já cadastrado");
             throw new DuplicateCPFException(userDTO.getCpf());
         }
-        if (userRepository.findByUserEmail(userDTO.getUserEmail()).isPresent()) {
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             logger.warning("Erro. Email já cadastrado");
-            throw new DuplicateEmailException(userDTO.getUserEmail());
+            throw new DuplicateEmailException(userDTO.getEmail());
         }
 
-        User user = User.builder().fullName(userDTO.getFullName()).userEmail(userDTO.getUserEmail()).cpf(userDTO.getCpf()).build();
+        User user = User.builder().username(userDTO.getUsername()).email(userDTO.getEmail()).cpf(userDTO.getCpf()).build();
         logger.info("Usuário criado!");
         User savedUser = userRepository.save(user);
         return User2UserDTO.convert(savedUser);
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getByEmail(String userEmail) {
         Objects.requireNonNull(userEmail, "Email não pode ser null");
         logger.info("Procurando usuário...");
-        return userRepository.findByUserEmail(userEmail)
+        return userRepository.findByEmail(userEmail)
                 .map(User2UserResponse::convert)
                 .orElseThrow(() -> {
                     logger.warning("Usuário não encontrado com Email: " + userEmail);
@@ -96,21 +96,21 @@ public class UserServiceImpl implements UserService {
         logger.info("Atualizando dados...");
         User existingUser = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new NotFoundException(userId);});
 
-        emailValidator.validate(userResponse.userEmail());
+        emailValidator.validate(userResponse.email());
 
-        if (userResponse.userEmail() != null
-                && !userResponse.userEmail().equals(existingUser.getUserEmail())
-                && userRepository.findByUserEmail(userResponse.userEmail()).isPresent()) {
+        if (userResponse.email() != null
+                && !userResponse.email().equals(existingUser.getEmail())
+                && userRepository.findByEmail(userResponse.email()).isPresent()) {
                 logger.warning("Erro. email já cadastrado");
-                throw new DuplicateEmailException(userResponse.userEmail());
+                throw new DuplicateEmailException(userResponse.email());
         }
 
-        if (userResponse.fullName() != null && !userResponse.fullName().isBlank()) {
-            existingUser.setFullName(userResponse.fullName());
+        if (userResponse.username() != null && !userResponse.username().isBlank()) {
+            existingUser.setUsername(userResponse.username());
         }
 
-        if (userResponse.userEmail() != null && !userResponse.userEmail().isBlank()) {
-            existingUser.setUserEmail(userResponse.userEmail());
+        if (userResponse.email() != null && !userResponse.email().isBlank()) {
+            existingUser.setEmail(userResponse.email());
         }
 
         logger.info("Usuário atualizado");
@@ -133,16 +133,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<DepositResponse> getAllDeposits(UUID idUser){
-        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new NotFoundException(idUser);});
+    public List<DepositResponse> getAllDeposits(UUID userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new NotFoundException(userId);});
         List<DepositHistory> listAllDeposit = user.getDepositHistory();
         return DepositHistory2DepositResponse.convertToList(listAllDeposit);
     }
 
     @Override
     @Transactional
-    public List<TransferResponse> getAllTransfers(UUID idUser){
-        User user = userRepository.findById(idUser).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + idUser); return new NotFoundException(idUser);});
+    public List<TransferResponse> getAllTransfers(UUID userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> {logger.warning("Usuário não encontrado com ID: " + userId); return new NotFoundException(userId);});
         List<TransferHistory> listAllTransfer = user.getTransferHistory();
         return TransferHistory2TransferResponse.convertToList(listAllTransfer);
     }

@@ -47,7 +47,7 @@ public class OperationsServiceImpl implements OperationsService {
             throw new InvalidValueException();
         }
 
-        User user = userRepository.findByUserEmail(requestDeposit.getUserEmail())
+        User user = userRepository.findByEmail(requestDeposit.getUserEmail())
                 .orElseThrow(() -> new NotFoundException(requestDeposit.getUserEmail()));
 
         user.setBalance(user.getBalance().add(requestDeposit.getAmount()));
@@ -66,8 +66,8 @@ public class OperationsServiceImpl implements OperationsService {
             throw new InvalidValueException();
         }
 
-        User fromUser = userRepository.findByUserEmail(requestTransfer.getUserEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getUserEmail()));
-        User destinationUser = userRepository.findByUserEmail(requestTransfer.getDestinationEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getDestinationEmail()));
+        User fromUser = userRepository.findByEmail(requestTransfer.getUserEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getUserEmail()));
+        User destinationUser = userRepository.findByEmail(requestTransfer.getDestinationEmail()).orElseThrow(() -> new NotFoundException(requestTransfer.getDestinationEmail()));
 
         if (fromUser.getBalance() == null || fromUser.getBalance().compareTo(requestTransfer.getAmount()) < 0) {
             throw new InsufficientBalanceException();
@@ -81,7 +81,7 @@ public class OperationsServiceImpl implements OperationsService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        TransferHistory transfer = new TransferHistory(now, destinationUser.getUserEmail(),"Transferência", requestTransfer.getAmount(), fromUser);
+        TransferHistory transfer = new TransferHistory(now, destinationUser.getEmail(),"Transferência", requestTransfer.getAmount(), fromUser);
         transferHistoryRepository.save(transfer);
 
         return TransferHistory2TransferResponse.convert(transfer);
