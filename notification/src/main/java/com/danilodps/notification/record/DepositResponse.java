@@ -1,4 +1,4 @@
-package pay.domain.record;
+package com.danilodps.notification.record;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
