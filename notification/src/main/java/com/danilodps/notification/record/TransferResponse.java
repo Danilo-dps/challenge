@@ -1,4 +1,4 @@
-package pay.domain.record;
+package com.danilodps.notification.record;
 
 import lombok.Builder;
 
