@@ -1,4 +1,4 @@
-package com.danilodps.pay;
+package pay;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
